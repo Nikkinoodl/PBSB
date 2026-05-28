@@ -1,0 +1,22 @@
+---
+layout: base.njk
+title: "A Blog About Oil Painting"
+description: "An extensive collection of blog posts about art, working in the artists studio, works in progress and oil painting techniques"
+permalink: "/blog/{{ category }}/"
+pagination:
+  data: collections.categories
+  size: 1
+  alias: category
+---
+
+{% assign posts = collections.post | filterByCategory: category %}
+<div class="col-12">
+    <h2>Category: {{ category }}</h2>
+        <p>This collection of articles provides some discussion on different aspects of painting and my
+        own art journey. Some of these posts are longer and more in-depth than my typical content.</p>
+        <p>Older posts are shown first.</p>
+        {% include "blognav.njk" %}
+</div>
+
+{% include "blogcards.njk" %}
+

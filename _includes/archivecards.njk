@@ -1,0 +1,19 @@
+    <div class = "row card-deck row-cols-1 row-cols-md-3 text-center">
+        {% for archive in archives %}
+            <div class="col mb-4">
+                <div class="card imageBox h-100 p-1">
+                    <a class="stretched-link" href="{{ archive.url }}">
+                        <img class="img img-fluid m-auto" style="height:10rem;" src="{{ archive.data.image }}" alt='{{ archive.data.title }}' />
+                    </a>
+                    <div class="card-body">
+                        <h4 class="card-title mt-3">
+                            {{ archive.data.title }}
+                        </h4>
+                        <p class="card-text">
+                            {{ archive.data.description }}
+                        </p>
+                    </div>
+                </div>      
+            </div>       
+        {% endfor %}
+    </div> 

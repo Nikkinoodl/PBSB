@@ -1,0 +1,25 @@
+---
+layout: base.njk
+title: "A Blog About Oil Painting by Kansas City based artist Simon  Bland"
+description: "An extensive collection of blog posts about art, working in the artists studio, works in progress and oil painting techniques"
+permalink: /blog/archive/
+---
+
+<div class = "row">
+    <div class = "col-sm-1">
+    </div>
+    <div class = "col-sm-10">
+        <p>This is a list of every blog post that I've written starting with the newest at the top. You will find that I started
+        creating lengthier articles around 2017, prior to that most posts were written to showcase an individual painting.
+        Newest posts are shown first.</p>
+        <h2>List of All Blog Posts</h2>
+        <ul>
+        {% for post in collections.post reversed %}
+            <li><a href="{{post.url}}">{{ post.data.title }}</a> - {{ post.data.shortdate }}</li>
+        {% endfor %}
+    </div> 
+    <div class = "col-sm-1">
+    </div>
+</div>
+
+

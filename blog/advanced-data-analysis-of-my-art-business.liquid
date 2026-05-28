@@ -1,0 +1,170 @@
+--- 
+layout: post.njk
+title: "Digging Deeper into the Data"
+permalink: /blog/advanced-data-analysis-of-my-art-business/ 
+date: 2025-02-09 23:50:29
+shortdate: 09 Feb 2025
+image: /images/2025/price_vs_year.png
+description: "In this second article on analysis of my art business data, I look at my metrics in greater detail and I try to gain insight into my pricing strategy and the time taken to complete individual paintings. In particular, I look at whether it is possible to predict prices and time taken to complete work"
+categories:
+  - nan
+tags: post
+--- 
+
+
+<p>To recap where we are at: in the <a href="/blog/data-analysis-of-my-art-business/" target="_blank" rel="noopener">first article</a>, I did an exploratory data analysis and visualization on my art business using some data that I've been keeping on my art business for the past 21 years.</p>
+<p>In this second article, I look more closely at the metrics and try to gain insight into both my pricing strategy and the time taken to complete individual paintings. In particular, I look at whether it is possible to predict prices for commissioned portraits in the future (spoiler alert: it is!) and estimate how much time they will take to complete (also a yes!).</p>
+<p>This analysis is rather deep and uses some tools and techniques that are commonly referred to as "data science". In reality, they are not difficult to learn if you've done high school math. I've provided links in the Footnotes section to the actual work (I used Python, Pandas, Matplotlib and Scikit-Learn in Jupyter notebooks) which you can find on my GitHub page. All the coding is available there.</p>
+<h3>Which Type of Art Provides the Best Returns on Effort?</h3>
+<p>Let's look at the price per unit time spent on each piece of artwork. We'll treat Commissions and Retail Artwork separately because they have different characteristics.</p>
+<p><img style="display: block; margin-left: auto; margin-right: auto;" src="/images/2025/price_distro.png" alt="A plot showing distribution of price per unit canvas area for commissioned portraits and retail artwork" width="928" height="464" /></p>
+<p>This indicates that pricing for commissioned portraits is reasonably well clustered with a mean of around 25 USD/hour for commissioned portraits and a more spread-out distribution with a mean of around 35 USD/hour for retail artwork. But why are the prices for retail artwork so spread out?</p>
+<h3>Is Pricing Consistent with the Painting Size?</h3>
+<p>Let's look at the price per area instead:</p>
+<p><img style="display: block; margin-left: auto; margin-right: auto;" src="/images/2025/price_per_area_vs_year.png" alt="Two plots showing the change in price per area over time for commissioned portraits and retail artwork." width="928" height="464" /></p>
+<p>The regression lines seem to indicate that commissioned paintings and retail artwork are&nbsp;currently&nbsp;equivalent in terms of price per unit canvas size, but that the price of retail artwork is increasing at a faster rate than commissioned portraits.</p>
+<p>The retail artwork data also looks more spread out in this plot, so let's try to understand why.</p>
+<p><img style="display: block; margin-left: auto; margin-right: auto;" src="/images/2025/price_per_area_histogramo.png" alt="Histograms of price per area for commissioned portraits and retail artwork" width="928" height="464" /></p>
+<p>The distribution of price per area for commissioned portraits is evidently well grouped. For retail artwork, there are two distinct groupings&mdash;it takes the form of camel humps in the KDE curve. This can be explained by selling both framed and unframed paintings (I've provided details of this in the detailed analysis which you can find on my GitHub page).</p>
+<p>Commissioned paintings are always sold unframed. For framed retail artwork, the price by unit canvas size is ~50% greater than that for commissioned paintings although I have to cover the cost of the frame, so there's probably less separation than this.</p>
+<h3>Can We Predict Time to Complete?</h3>
+<p>I'm interested in being able to estimate how long a portrait will take to complete. I could use that to help price it correctly and to figure out my studio workload with more accuracy.</p>
+<p>Along with price and size, I have tracked the amount of time it takes to finish each portrait, although the data is less precise.</p>
+<p>Before we start regression, let's quickly plot the relationship between Actual Time and Year to confirm my suspicion that there's no direct relationship between the two. Portraits of people are the most time-consuming and difficult to complete, so we'll focus on those for now.</p>
+<p><img style="display: block; margin-left: auto; margin-right: auto;" src="/images/2025/actual_time_vs_year.png" alt="Plot of actual time vs year for portraits of people" width="575" height="431" /></p>
+<p>This plot indicates there might be a direct correlation between Actual Time and Year, but I want to inspect the data more carefully: I know that the time spent increases with number of subjects and with area, so let's find a way to show the trends in those over time by looking at:</p>
+<ol>
+<li>Actual Time per Unit Area vs. Year</li>
+<li>Actual Time per Head vs. Year</li>
+</ol>
+<p>Before we start a more complex regression, let's plot the relationships between the variables.</p>
+<p><img style="display: block; margin-left: auto; margin-right: auto;" src="/images/2025/time_per_head_and_area_vs_year.png" alt="Plots of data showing time per head and time per area vs year for people portraits" width="928" height="619" /></p>
+<p>There are several outliers in the data, which might be due to misclassification, but there's also an&nbsp;aspect of the portrait creation process at work here: some painting projects simply take longer than others and it can be difficult to predict which ones those will be in advance.</p>
+<p>A multi-variable linear regression yields the following:</p>
+<pre class="language-python" style="background-color: #f5f2f0; padding: 1rem;"><code>The R2 value is:  0.6059059359108192
+The intercept is: -5714.259688343059
+The coefficient for Year is 2.846720892057734
+The coefficient for Area is 0.05614672115382439
+The coefficient for NumSubjects is 9.431313897337578
+</code></pre>
+<p>Which is a reasonably good fit. Let's check the model by estimating how long it would take to complete a portrait of one person on a 20x26 canvas in 2025.</p>
+<pre class="language-python" style="background-color: #f5f2f0; padding: 1rem;"><code># Put data into variables
+year = 2025
+area = 20 * 26
+num_subjects = 1
+
+# Predict price
+time = intercept + coefficients[0] * year + coefficients[1] * area + coefficients[2] * num_subjects
+
+print('The predicted time is: ', time.round(1), 'hours')
+The predicted time is:  89.0 hours</code></pre>
+<p>That seems like a very good estimate. Now, let's work on prices.</p>
+<h3>Can We Predict the Price of a Dog Portrait?</h3>
+<p>One thing that will have been obvious in the previous plots is that the data I have for people portraits is rather sparse. I have much more data relating to dog portraits than those of other subjects, so it's natural choice to make them the target for this next analysis.</p>
+<p>I tend to price portraits based on a combination of my historical data and a rough assessment of how difficult I assess they will be to complete. In the absence of a 'difficulty' rating, we'll examine the correlation between year, area, number of subjects and price. This requires another multi-valued linear regression.</p>
+<p>First, we'll do a check to confirm my suspicion that Price vs. Year doesn't provide a meaningful regression line.</p>
+<p><span style="color: rgba(0, 0, 0, 0.87); font-family: system-ui, -apple-system, blinkmacsystemfont, 'Segoe UI', helvetica, arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol'; font-size: 14px; background-color: #ffffff;"><img style="display: block; margin-left: auto; margin-right: auto;" src="/images/2025/price_vs_year.png" alt="A linear regression of price vs year for dog portraits" width="596" height="447" /></span></p>
+<p>That's a relationship that's not going to provide us with any meaningful insights.</p>
+<p>However, I do have an idea what to focus on. Prices tend to be higher for larger canvas sizes (for example, I might be painting a whole body rather than just a head and shoulders portrait), and prices tend to be higher for multi-subject portraits (it takes more effort to paint two dogs than it does to paint one). In addition, prices are likely to increase over time. We can therefore plot:</p>
+<ol>
+<li>Price per Area vs Year</li>
+<li>Price per Head vs Year</li>
+</ol>
+<p>One further thing:</p>
+<p>In 2010 or so, I started doing two grades of portrait&mdash;a sketch portrait that started at 400 USD per head and a formal portrait that started at 700-800 USD. The data didn't make much sense with the sketch portraits included, so I removed them.</p>
+<p>Before this, I didn't&nbsp;officially&nbsp;do sketch vs. formal portraits, but there were a few lower cost portraits in the mix. I removed these, too.</p>
+<p>Before we start a more complex regression, let's plot the relationships between the variables.</p>
+<p style="margin-bottom: 0.5em; color: rgba(0, 0, 0, 0.87); font-family: system-ui, -apple-system, blinkmacsystemfont, 'Segoe UI', helvetica, arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol'; font-size: 14px; background-color: #ffffff;"><img style="display: block; margin-left: auto; margin-right: auto;" src="/images/2025/price_per_area_per_head_vs_year.png" alt="Plot of price per head and price per area vs year for dog portraits" width="928" height="619" /></p>
+<p>Based on these plots, we can relate price, area, number of subjects and year. Now we can try a multi-variable linear regression&mdash;that should give use enough information to make price predictions.</p>
+<pre class="language-python" style="background-color: #f5f2f0; padding: 1rem;"><code>The R2 value is:  0.8678301344450077
+The intercept is: -52433.1759966182
+The coefficient for Year is 26.194149928731722
+The coefficient for Area is 0.12031041246223617
+The coefficient for NumSubjects is 452.2857750676249</code></pre>
+<p>That produces a strong correlation. Let's estimate the cost of a two-dog portrait on a 20x24 canvas in 2025 using the coefficients that were calculated above:</p>
+<pre class="language-python" style="background-color: #f5f2f0; padding: 1rem;"><code># Put data into variables
+year = 2025
+area = 20 * 24
+num_subjects = 2
+
+# Predict price
+price = intercept + coefficients[0] * year + coefficients[1] * area + coefficients[2] * num_subjects
+
+print('The predicted price is : $', price.round(2))
+The predicted price is : $ 1572.3</code></pre>
+<p>Which is in the right ballpark, although a little lower than I would like it to be.</p>
+<h3>Can we Predict the Price of a Portrait Using Polynomial Regression?</h3>
+<p>While straight line fitting looks good, I also want to examine polynomial curve fitting.</p>
+<p>It has an extra degree of difficulty over straight-line fitting: we don't know what order of polynomial to use.</p>
+<p>The way around this is to try different degrees of polynomial in turn to see which works best. But here lies a problem&mdash;as the degree of the polynomial increases, the regression can become over-fit (it tries to take all the noise into account). The solution is to split the data into a test group and a training group. The training data is used to come up with a regression curve, then test data is used to validate the model.</p>
+<p>Here is the result of doing that for the dog portrait commissions:</p>
+<table class="table">
+<thead>
+<tr>
+<th scope="col">Degree</th>
+<th scope="col">Training RMSE</th>
+<th scope="col">Test RMSE</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th scope="row">1</th>
+<td>111.54</td>
+<td>122.51</td>
+</tr>
+<tr>
+<th scope="row">2</th>
+<td>89.91</td>
+<td>116.20</td>
+</tr>
+<tr>
+<th scope="row">3</th>
+<td>67.65</td>
+<td>137.10</td>
+</tr>
+</tbody>
+</table>
+<p>&nbsp;</p>
+<p>The results show that the polynomial rapidly becomes overfit at third order and higher. We can visualize that by plotting the training RMSE against the test RMSE.</p>
+<p><img style="display: block; margin-left: auto; margin-right: auto;" src="/images/2025/poly_model_error.png" alt="Plot showing polynomial degree vs error for model fitting" width="539" height="404" /></p>
+<p>The optimum polynomial appears to be second order. Clearly, the sparse portrait data after 2019 (thanks, COVID!), makes fitting in this time period and projections into the future a challenge.</p>
+<h2 id="Predicting-a-Price-Using-a-Second-Order-Polynomial">Predicting a Price Using a Second Order Polynomial</h2>
+<p>Let's fit a second order polynomial to the entire data set.</p>
+<pre class="language-python" style="background-color: #f5f2f0; padding: 1rem;"><code>Intercept: -5312758.340217695
+Coefficients:
+1: 0.0
+Year: 5288.709863302076
+Area: -60.30536117705008
+NumSubjects: -39419.184523918404
+Year^2: -1.3161292986936226
+Year Area: 0.030290810859441963
+Year NumSubjects: 19.753826213429235
+Area^2: -0.0001778904048839471
+Area NumSubjects: -0.10540792452618564
+NumSubjects^2: 73.93718308278852
+R&sup2; score: 0.9086869357574229</code></pre>
+<p>That produces a stronger correlation than the multi-variable linear regression. An interesting result is that the model predicts a price decline in the future (the coefficient for Year^2 is negative) &mdash; this comes from a mild overfitting of the training data combined with the lack of data after 2019.</p>
+<p>Still, it might get us a price estimate in the right ballpark. As before, let's estimate the cost of a two-dog portrait on a 20x24 canvas in 2025 using the coefficients that were calculated above. Unfortunately, it's much more complex than the linear calculation:</p>
+<pre class="language-python" style="background-color: #f5f2f0; padding: 1rem;"><code># Put data into variables
+year = 2025
+area = 20 * 24
+num_subjects = 2
+
+# Predict price
+price = intercept + (coefficients[1] * year) + (coefficients[2] * area) + (coefficients[3] * num_subjects) + \
+        (coefficients[4] * year * year) + (coefficients[5] * year * area) + (coefficients[6] * year * num_subjects) + \
+        (coefficients[7] * area * area) + (coefficients[8] * area * num_subjects) + (coefficients[9] * num_subjects * num_subjects)
+
+print('The predicted price is : $', price.round(2))
+The predicted price is : $ 1740.72</code></pre>
+<p>That's a very good estimate&mdash;right around where I would try to price a 20x24 two dog portrait of moderate complexity.</p>
+<h2>Footnotes</h2>
+<h3>Privacy</h3>
+<p>Wherever possible, the data has been anonymized.</p>
+<h3>Where is the Data From?</h3>
+<p>As soon as I started doing art full time, I built an application to help me manage my customer base, do invoicing and track expenses. With a few tweaks, that system has been in continual use for 20 years. The data was extracted from there via SQL queries and saved to an Excel spreadsheet, where I did some simple cleanup before loading it into Pandas.</p>
+<h3>How Did I Clean and Analyze the Data?</h3>
+<p>You can see the full analysis I did on my GitHub page: <a href="https://github.com/Nikkinoodl/Data-Analysis-Art/blob/main/03-Prices-and-Timing.ipynb" target="_blank" rel="noopener">prices and timing</a>, <a href="https://github.com/Nikkinoodl/Data-Analysis-Art/blob/main/04-Time-Predictions-Multi.ipynb" target="_blank" rel="noopener">time predictions</a> and <a href="https://github.com/Nikkinoodl/Data-Analysis-Art/blob/main/05-Price-Predictions-Poly.ipynb">price predictions</a>.&nbsp;I'd encourage you to take a glance if you're interested in how this is done.</p>
+<p>To start, some data cleanup was required. There were a few records that had null values in otherwise important fields, an outlier in the price field (a very large painting that would otherwise skew the analysis) and some of the fields needed to be converted to numeric data.</p>
+<p>The data analysis was done with Python, Pandas, and the Scikit-Learn machine learning library. Plotting was done with Matplotlib and the Seaborn libraries.</p>
+<p><em>A briefer version of this article was also published on <a href="https://www.linkedin.com/pulse/digging-deeper-data-simon-bland-6vskc/?trackingId=JosZ%2FvoJPdU5tjLy9ybGVQ%3D%3D" target="_blank" rel="noopener">LinkedIn</a></em></p>

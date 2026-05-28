@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ title }}</title>
+    {% include "head.njk" %}
+</head>
+  <body>
+    <div class="container-xl">
+      {% include "header.njk" %}
+      <hr/>
+      <main>
+        <div class="row">
+          <div class="col-sm-2">
+          </div>
+          <div class="col-sm-8">
+            <img src="{{ image }}" alt="{{ alt }}" class="img-fluid mx-auto d-block">
+            <p class="title">{{ title }}</p>
+            <p class="description">{{ description }}</p>
+            <p class=medium">{{ medium}} : {{ ground }}</p>
+          </div>
+          <div class="col-sm-2">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-2">
+          </div>
+          <div class="col-sm-8">
+            {% if prev %}
+              <a class="btn btn-outline-secondary mb-1 me-2" href="{{ prev }}">Previous</a>
+            {% endif %}
+            {% if next %}
+              <a class="btn btn-outline-secondary mb-1 me-2" href="{{ next }}">Next</a>
+            {% endif %}
+          </div>
+          <div class="col-sm-2">
+          </div>
+        </div>
+      </main>
+      {% include "socialicons.njk" %}
+      {% include "footer.njk" %}
+    <script src="/assets/blog-custom.js"></script>
+  </body>
+</html>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Archive",
+  "headline": "{{ title }}",
+  "description": "{{ description }}",
+  "author": {
+    "@type": "Person",
+    "name": "Simon Bland"
+  },
+  "publisher": {
+    "@type": "Portraits by Simon Bland",
+    "name": "Art Archives",
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://portraitsbysimonbland.com{{ permalink }}"
+  },
+  "image": "https://portraitsbysimonbland.com{{ image }}"
+}
+</script>

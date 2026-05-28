@@ -1,0 +1,25 @@
+    <div class = "row card-deck row-cols-1 row-cols-md-3 text-center">
+        {% for post in posts %}
+            <div class="col mb-4">
+                <div class="card imageBox h-100 p-1">
+                    <a class="stretched-link" href="{{ post.url }}">
+                        <img class="img img-fluid m-auto" style="height:10rem;" src="{{ post.data.image }}" alt='{{ post.data.title }}' />
+                    </a>
+                    <div class="card-body">
+                        <h4 class="card-title mt-3">
+                            {{ post.data.title }}
+                        </h4>
+                        <p class="card-text">
+                            <small class="muted">
+                                by Simon Bland / {{ post.data.shortdate }}
+                            </small>
+                        </p>
+                        <p class="card-text">
+                            {{ post.data.description }}...
+                        </p>
+                    </div>
+                    <meta content="{{ post.data.date }}" />
+                </div>      
+            </div>       
+        {% endfor %}
+    </div> 

@@ -1,0 +1,148 @@
+--- 
+layout: post.njk
+title: "A Short Guide to GIMP 2.10 Plugins"
+permalink: /blog/a-short-guide-to-gimp-plugins/ 
+date: 2024-01-29 23:14:07
+shortdate: 29 Jan 2024
+image: /images/2024/Python.jpg
+description: "This article provides a brief guide to getting started with automated image editing in GIMP. "
+categories:
+  - gimp
+  - photography
+  - tips
+tags: post
+--- 
+
+
+<p>On more than one occasion, I have mentioned that you can get great benefits from processing and adjusting your reference photos before you start to paint from them.</p>
+<p>In this blog post I want to introduce you to a sample automation script for GIMP 2.10 (which I will hereafter refer to as a <em>plugin</em>) and show you how to create others like it that can perform incredibly powerful image manipulation with just a small amount of code. The benefits of this are twofold: you can do repetitive, complex image manipulation very quickly, and by having these operations in a script you can repeat them at any point in the future without having to remember or relearn anything.</p>
+<p>Before we go further, I just want to quickly review the two main options for image manipulation software.</p>
+<p>The most popular software, Adobe Photoshop, requires a subscription (there is also a limited version called Photoshop Elements that can be purchased outright). Photoshop has great workflow tools, the ability to record, edit and run automated scripts called <em>actions</em>, and has started to incorporate AI tools for image generation. It is the software of choice for most professional photographers.</p>
+<p>The other major image manipulation software is called GIMP. It is free software which is developed and maintained by volunteers. I think it is fair to say that it falls far behind Photoshop in terms of workflow and integration with a wider suite of tools, however the core functionality is very strong. Its big advantage over Photoshop is that you can write plugins in different coding languages such as Python, Scheme and C.</p>
+<p>In this article, we are going to limit ourselves to working in Python because it is much easier to learn than the other two: you can get started in no time, even if you have little experience with coding.</p>
+<p><em>Before you get too invested in this article, please note that we are referring to GIMP 2.10 throughout. The latest version, GIMP 3.0, uses some different features that I will address in another article.</em></p>
+<h3>A GIMP Plugin Sample</h3>
+<p>By way of an example, here's a short GIMP plugin written in Python. It converts an image to black and white in a Payne's Grey hue and makes changes to the brightness and contrast in a limited range, depending on the user's input:</p>
+<pre class="language-python" style="background-color: #f5f2f0; padding: 1rem;"><code>#!/usr/bin/env python
+# -*- coding: utf8 -*-
+
+from gimpfu import *
+
+def desat( img, draw, brightAdjust, contrastAdjust ):
+
+	#clean start
+	img.disable_undo()
+	pdb.gimp_context_push()
+
+	#copy the visible image into a new layer
+	copyLayer1=pdb.gimp_layer_new_from_visible(img, img, "BaseCopy")
+	pdb.gimp_image_insert_layer(img, copyLayer1, None, -1)
+
+	#desaturate and colorize the new layer
+	pdb.gimp_desaturate_full(copyLayer1, 1)
+	pdb.gimp_colorize( copyLayer1, 215, 11, 0)
+
+	#adjust brightness and contrast of the new layer
+	pdb.gimp_drawable_brightness_contrast(copyLayer1, brightAdjust, contrastAdjust)
+
+	#clean up	
+	pdb.gimp_displays_flush()
+	pdb.gimp_context_pop()
+	img.enable_undo()
+
+register( "gimp_desat",
+  "Add b/w effect",
+  "Add b/w effect",
+  "Simon Bland",
+  "(&copy;) 2024 Simon Bland",
+  "2024-01-30",
+  "&lt;Image&gt;/Filters/Desat",
+  'RGB*',
+  [
+	(PF_SLIDER, "brightAdjust","Brightness", 0.4, (-0.5, 0.5, 0.1)),
+	(PF_SLIDER, "contrastAdjust", "Contrast", 0.3, (-0.5, 0.5, 0.1))
+  ],
+  '',
+  desat)
+
+main()</code></pre>
+<p>Although it looks complicated at first glance, there are only three lines of code in here that are doing image manipulation, the rest is boilerplate code that you might find in any other plugin. The coding is trivial.</p>
+<h3>Deconstructing a GIMP Plugin</h3>
+<p>Let's break it down into its constituent parts. There are five different sections that we will look at separately.</p>
+<h4>1.Opening</h4>
+<p>The first two lines are typical of all Python code. It tells the executable where to find Python and which coding is used for this script. You can likely use this unchanged for all your plugins. I would point out that the /usr/bin/env location is probably unnecessary and is definitely not used by Windows, but it won't hurt to leave it in.</p>
+<pre class="language-python" style="background-color: #f5f2f0; padding: 1rem;"><code>#!/usr/bin/env python
+# -*- coding: utf8 -*-</code></pre>
+<h4>2. Imports</h4>
+<p>Next, we import the GIMP plugin API so that we can call GIMP functions from the plugin. All GIMP plugin scripts should contain this line.</p>
+<p>If we need to import other Python modules (more advanced than we need to know at this point) we can also import them here.</p>
+<pre class="language-python" style="background-color: #f5f2f0; padding: 1rem;"><code>from gimpfu import *</code></pre>
+<h4>3. Define Functions</h4>
+<p>The main part of the plugin defines a set of functions and properties (here we just have a single function) that does something to our image.</p>
+<p>You can see that we preface GIMP API calls with "<em>pdb"</em>. That stands for&nbsp;<em>procedural database</em>&nbsp;which is the collection of all GIMP API functions, scripts and plugins. Yes, you can call other plugins from your plugin.</p>
+<p>A good practice when creating a plugin is to make a copy of the visible image into a new layer and start editing the copy rather than the original image. Each new effect should occur on a new layer. After the plugin has run, we can fine tune each effect separately by changing the opacity of its layer. We even eliminate an effect entirely by deleting the layer.</p>
+<p>In this simple plugin we are just copying the visible image, adding it as a new layer above the old one, then de-saturating it, colorizing, and changing the brightness and contrast. For the sake of simplicity, we will perform these actions on the new layer.</p>
+<p>The remaining code does things that can be thought of as administration.</p>
+<p>We try not to leave a mess behind when we run a script because it can be incredibly annoying if we start overwriting settings and defaults, so we&nbsp;<em>push</em> the context when we start and <em>pop</em> the context when we finish.</p>
+<p>In GIMP, <em>context</em> means the current collection of things we have as settings like brush size, brush type and gradient type. <em>Push</em> saves a copy of those settings and <em>pop</em> restores them. I make a habit of adding these commands to all my plugins.</p>
+<p>Flushing the display ensures that all pending image updates are completed before the plugin terminates.</p>
+<p>Disabling undo on start allows the plugin to run faster than it otherwise would. If invoked, we always enable undo on completion.</p>
+<pre class="language-python" style="background-color: #f5f2f0; padding: 1rem;"><code>def desat( img, draw, brightAdjust, contrastAdjust ):
+
+	#clean start
+	img.disable_undo()
+	pdb.gimp_context_push()
+
+	#copy the visible image into a new layer
+	copyLayer1=pdb.gimp_layer_new_from_visible(img, img, "BaseCopy")
+	pdb.gimp_image_insert_layer(img, copyLayer1, None, -1)
+
+	#desaturate and colorize the new layer
+	pdb.gimp_desaturate_full(copyLayer1, 1)
+	pdb.gimp_colorize( copyLayer1, 215, 11, 0)
+
+	#adjust brightness and contrast of the new layer
+	pdb.gimp_drawable_brightness_contrast(copyLayer1, brightAdjust, contrastAdjust)
+
+	#clean up	
+	pdb.gimp_displays_flush()
+	pdb.gimp_context_pop()
+	img.enable_undo()</code></pre>
+<h4>4. Call the Register</h4>
+<p>The next section calls a function that registers the plugin in the procedural database. We provide some general information about the plugin, where to place it in the GIMP menu, what image types it accepts, any input variables that the user must provide, and the name of the primary function that will be executed when the plugin is called.</p>
+<pre class="language-python" style="background-color: #f5f2f0; padding: 1rem;"><code>register( "gimp_desat",
+  "Add b/w effect",
+  "Add b/w effect",
+  "Simon Bland",
+  "(&copy;) 2024 Simon Bland",
+  "2024-01-30",
+  "&lt;Image&gt;/Filters/Desat",
+  'RGB*',
+  [
+	(PF_SLIDER, "brightAdjust","Brightness", 0.4, (-0.5, 0.5, 0.1)),
+	(PF_SLIDER, "contrastAdjust", "Contrast", 0.3, (-0.5, 0.5, 0.1))
+  ],
+  '',
+  desat)</code></pre>
+<h4>5. Load</h4>
+<p>Finally, we provide the name of the GIMP function that loads the plugin. This same line is used in all GIMP Python plugins.</p>
+<pre class="language-python" style="background-color: #f5f2f0; padding: 1rem;"><code>main()</code></pre>
+<h3>Where to Find More Information</h3>
+<p>You can find more information and documentation on the plugin API by browsing the Python-Fu console window in GIMP. It can be cumbersome to use, but it is up to date and contains thoroughly detailed information on each function and its options. If you search for information online, be aware that GIMP is now around 25 years old, and some information you find may have been superseded.</p>
+<p>There are tons of resources online for learning Python, and it would make no sense to duplicate them here. If you start with&nbsp;<a href="https://www.w3schools.com/python/" target="_blank" rel="noopener">https://www.w3schools.com/python/</a>, you should be able to pick up the basics in no time at all.</p>
+<p>It is worth noting that GIMP 2.10 uses Python 2, not the more recent Python 3. There are some small syntax differences between the two versions, but nothing that should cause you significant problems when writing plugins. The latest version, GIMP 3.0, uses Python 3.</p>
+<h3>Installing Your Plugin</h3>
+<p>Once you finally have a script ready it must be named with the Python extension type, e.g.:</p>
+<pre class="language-markup" style="background-color: #f5f2f0; padding: 1rem;"><code>desat.py</code></pre>
+<p>Then copy it to one of the following hidden locations. If you have not already done do, it is much easier to find these folders if you make them visible &mdash; in Windows, you can do this from the menu bar in File Explorer.</p>
+<p>Windows:</p>
+<pre class="language-markup" style="background-color: #f5f2f0; padding: 1rem;"><code>C:\user\&lt;username&gt;\AppData\Roaming\GIMP\2.10\plugins</code></pre>
+<p>Linux:</p>
+<pre class="language-markup" style="background-color: #f5f2f0; padding: 1rem;"><code>/usr/&lt;username&gt;/.config/GIMP/2.10/plugins</code></pre>
+<p>And that's all there is to it. Open GIMP and you're now ready to go with your new plugin.</p>
+<h3>Wrap Up</h3>
+<p>We've outlined the benefits of creating and using plugins for complex and repeatable image processing, how to create a simple Python plugin for GIMP and where to learn some basic Python coding, as well as showing you how to install your new plugin.</p>
+<p>The best way to create new plugins is to build on existing ones, but I wouldn't hesitate to try out an AI tool like Copilot if you need more help. Please feel free to use this and any of the other plugins in my repository as the starting point for your own work.</p>
+<p>Happy image editing!</p>
+<p>&nbsp;</p>
+<p><em>Post updated April 2025.</em></p>

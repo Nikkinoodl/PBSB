@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ title }}</title>
+    {% include "head.njk" %}
+</head>
+  <body>
+    <div class="container-xl">
+      {% include "header.njk" %}
+      <hr/>
+      <main>
+        <div class="row">
+          <div class="col-sm-2">
+          </div>
+          <div class="col-sm-8">
+            <h2>{{ title }}</h2>
+            <p class="postdate">Simon Bland: {{ shortdate }}</p>
+            {{ content | safe }}
+            <p class="signoff">Simon Bland: {{ shortdate }}</p>
+          </div>
+          <div class="col-sm-2">
+          </div>        
+      </main>
+      {% include "socialicons.njk" %}
+      {% include "footer.njk" %}
+    </div>
+    <script src="/assets/blog-custom.js"></script>
+  </body>
+</html>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "{{ title }}",
+  "description": "{{ description }}",
+  "author": {
+    "@type": "Person",
+    "name": "Simon Bland"
+  },
+  "publisher": {
+    "@type": "Portraits by Simon Bland",
+    "name": "Artist Blog",
+  },
+  "datePublished": "{{ date }}",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://portraitsbysimonbland.com{{ permalink }}"
+  },
+  "image": "https://portraitsbysimonbland.com{{ image }}"
+}
+</script>

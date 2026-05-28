@@ -1,0 +1,48 @@
+--- 
+layout: post.njk
+title: "Using Blender to Create Artist's Reference Images"
+permalink: /blog/using-blender-to-create-artists-reference-images/ 
+date: 2022-11-03 15:45:01
+shortdate: 03 Nov 2022
+image: /images/2022/Jar3.jpg
+description: "In this article, I set out to examine whether models created in Blender can be used as reference images for traditional artwork."
+categories:
+  - blender
+  - instruction
+  - landscape
+  - tips
+tags: post
+--- 
+
+
+<p>A maquette is a scale model that is used by sculptors and architects for preliminary studies. Although they are not often used by 2D artists (at least among the ones that I know), they can be a useful tool in some situations. Because I have played around with modelling software in the past, I set out to test the idea that a virtual model created in the <a href="https://www.blender.org/">Blender</a> software application could be used in place of a physical model.</p>
+<p>Blender uses a mesh of nodes, edges, and planes in combination with textures, virtual lighting, and a virtual camera to render an image. It is easy to learn to do some basic modelling&mdash;you can learn the basics in just a few hours&mdash; but it becomes increasingly more complex in short order.</p>
+<p><span style="text-align: center;">Here's a simple model of a building, created without using colors or textures. It took only a few minutes to build and render.</span></p>
+<p><img style="display: block; margin-left: auto; margin-right: auto;" src="/images/2022/Building.jpg" alt="A simple farm building rendered in black and white using Blender. There is light coming in from the left side and it casts strong shadows." width="650" height="490" /></p>
+<p style="text-align: center;">A simple model of a farm building</p>
+<p>I found a use for this model during a recent painting: I was working from a Google Street View image, but the lighting on the buildings was hard to make out. To give me something better to work from, I extended this Blender model by adding an extra building, then changed the lighting until I matched that of the reference image. With a little work I had created a maquette that I could use as the basis for the painting.</p>
+<p><img style="display: block; margin-left: auto; margin-right: auto;" src="/images/2022/Buildings.jpg" alt="An image of two white farm buildings in a green field rendered with Blender. There is sunlight coming from the upper left and slightly behind the buildings. The sky has a warm tone." width="650" height="426" /></p>
+<p style="text-align: center;">Blender model used as a maquette</p>
+<p>This is the model with the extra building added. I included a simple grass texture on the plane which helped to fix the shadow colors and the reflected light under the buildings' eaves.&nbsp;</p>
+<p><img style="display: block; margin-left: auto; margin-right: auto;" src="/images/2022/Summers-Promise.jpg" alt="An oil painting by Simon Bland of two farm buildings set in a field of broken colors. There are trees on the horizon and a duck egg green sky.." width="800" height="453" /></p>
+<p style="text-align: center;">Summer's Promise. 9"x12", oil on linen panel, 2022.</p>
+<p>As you can see, the buildings make up a small part of the finished painting and most of the canvas real estate is sourced from elsewhere. Even so, the model was extremely useful, and I thought it was worth showing this nifty trick.</p>
+<p>Now if you are like me, you are already wondering if this can be used for more than just filling in a few details in a picture&mdash;could it be used to create a reference image from which you source an entire painting?</p>
+<p>The answer is that it depends on how much effort you think it is worth investing. It is easy to create images of simple things, but more complex objects and real-life wear and tear are harder to build and render. In addition, an ideal Blender model is created from reference images or real-life objects, so it may feel like you are adding an unnecessary extra step in your process.</p>
+<p>There are a couple of cases where I think it may bring some benefit: we've already seen one example where I needed to play with a model and light to provide better clarity. Another situation might be where you want to play with light effects that you can't create in real life.</p>
+<p>For example, here is a render of a Mason jar that I created:&nbsp;</p>
+<p><img style="display: block; margin-left: auto; margin-right: auto;" src="/images/2022/Jar3.jpg" alt="An image of a small Mason jar rendered in Blender. The jar is sitting on a pale treen surface and is indirectly lit by window light." width="661" height="626" /></p>
+<p style="text-align: center;">Mason jar with liquid, created with Blender.</p>
+<p>I rendered this small liquid filled Mason jar with a backdrop window light. I am now able to modify the composition, light and colors to my heart's content.</p>
+<p>For example, if I wanted to see this in the glow of sunset light, it would be trivial to change the backdrop and the light color to reproduce the effect. I could just as easily change the color of the plane, jar lid, or even the transparency of the glass.</p>
+<p>So, while the lid was especially complex to model, with the work done, this reference can be used forever and in lots of diverse ways.</p>
+<p>What's still missing, though, is most of the patina and wear that exists in real life&mdash;to create that in this model would be possible, but I'm not certain that the effort would be worth it. In the end, the tradeoff between the effort to create a working model for a reference image and the impact that it will have on a finished painting must be decided by the artist. And there's one thing of which I'm certain: this is a piece of software on which you can spend an enormous amount of time.</p>
+<p>If you are interested in learning to use Blender, I strongly recommend starting with this series of videos: <a href="https://www.youtube.com/watch?v=nIoXOplUvAw&amp;list=PLjEaoINr3zgFX8ZsChQVQsuDSjEqdWMAD">Blender 3.0 Beginner Tutorial - Part 1 - YouTube</a> where you will learn all sorts of useful techniques, which culminate in you rendering an image of a donut like this one. There is no faster way to get started:</p>
+<p>&nbsp;<img style="display: block; margin-left: auto; margin-right: auto;" src="/images/2022/Donut2.jpg" alt="An image of an iced donut rendered in Blender. The donut sits on a blue-green surface." width="650" height="526" /></p>
+<p style="text-align: center;">Blender rendered image of a donut.</p>
+<p>If you are as nerdy as I am and enjoy writing code (i.e. you are extremely nerdy), you might also want to try your hand at some basic OpenGL programming. This series of tutorials based on C#: <a href="https://opentk.net/learn/index.html">LearnOpenTK - OpenTK</a> will help you to understand more of what's happening behind the scenes in Blender.</p>
+<p>It will be much easier to do if you've studied some basic linear algebra (vectors, spaces, and matrices). I was impressed by the quality of the tutorials at Khan Academy, where you could start off with this series of free lessons: <a href="https://www.khanacademy.org/math/linear-algebra/vectors-and-spaces">* Vectors and spaces | Linear algebra | Math | Khan Academy</a></p>
+<p>I want to end here. As I mentioned earlier, this is a piece of software that can gobble up an extraordinary amount of time, and that is also true when it comes to writing about it.</p>
+<p>In this article we've seen some examples of things we could do to create some simple reference materials for painting, and we've also discussed some of the drawbacks. This is not a piece of software that will be useful for everyone, and the learning curve is rather steep once you get away from the most basic stuff. Still, it's fun to try out new things occasionally, and this software does tend to reward all the hours of effort.</p>
+<p>You can create much more complicated and realistic things than I've demonstrated here&mdash;whole urban landscapes at the click of a button, for example, and it is not inconceivable that some commercial stock images have been generated in Blender. Here is a line that I, personally, would be reluctant to cross. To be so removed from the real world, to paint from reference materials that have never felt the breath of wind, or the caress of the sun would be to give up everything that has meaning in my art.</p>
+<p>That said, almost every time I paint, I use my imagination as part of the creation process, so I am not against using Blender as a bridge to help realize my creations. I'm just reluctant to use other people's Blender art to further my own painting. If I can't speak with my own voice, I rather be quiet.</p>

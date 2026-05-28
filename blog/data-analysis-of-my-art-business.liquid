@@ -1,0 +1,71 @@
+--- 
+layout: post.njk
+title: "Data Analysis of My Art Business"
+permalink: /blog/data-analysis-of-my-art-business/ 
+date: 2025-01-21 23:48:26
+shortdate: 21 Jan 2025
+image: /images/2025/wordcloud_dog.png
+description: "For the entirety of my career as a professional artist, I've kept detailed records of all the work I've created. This is a basic analysis of the data."
+categories:
+  - instruction
+  - tips
+  - writing
+tags: post
+--- 
+
+
+<h3>An Overview</h3>
+<p>This analysis of my portrait and art business was done largely as an exercise, but it ended up generating some interesting insights. It uses my own data, collected over a period of 21 years to show what kinds of challenges I met while painting.</p>
+<p>In this first article, I focus on an exploratory data analysis and visualization. It's an attempt to understand my art business at a high level without getting into too much detail. In the <a href="/blog/advanced-data-analysis-of-my-art-business/" target="_blank" rel="noopener">second article</a>, I go into more depth and do some regression analysis.</p>
+<p>Some details and links to the actual analysis have been provided in the footnotes section at the bottom of this article.</p>
+<h3>What is the Distribution of my Prices?</h3>
+<p>Like most artists, I spent a lot of time worrying about my prices and whether a few dollars more here or there would cause sales to dry up.</p>
+<p><span style="color: #1f2328; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji'; font-size: 16px; background-color: #ffffff;"><img style="display: block; margin-left: auto; margin-right: auto;" src="/images/2025/price_hist.png" alt="Histogram of normalized transaction values" width="800" height="600" /></span></p>
+<p>The histogram shows that most of my sales are of paintings in the bottom third of the range. I've plotted max/min normalized price here. That means the value of each sale has been adjusted so that it's on a scale of 0 (the smallest transaction price) to 1 (the largest transaction price).&nbsp;</p>
+<h3>What Kinds of Paintings Make Up Sales?</h3>
+<p>I split my paintings up into two main categories: commissioned paintings and retail artwork. Customers don't tend to buy only one type of art. The third category of "Other" covers things like book sales, licensing and restorations.</p>
+<p><span style="color: #1f2328; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji'; font-size: 16px; background-color: #ffffff;"><img style="display: block; margin-left: auto; margin-right: auto;" src="/images/2025/types_sm.png" alt="Pie chart showing the makeup of different types of paintings" width="600" height="500" /></span></p>
+<p>The pie chart shows the relative volumes of individual sales transactions. I had to pinch myself when I saw this, because I'd almost forgotten how many portraits were completed in the first 10 years.</p>
+<h3>What Kinds of Portraits Have I Painted?</h3>
+<p>A breakout of the commissions by type shows that I spent a large part of my early career focused on painting dogs.</p>
+<p style="text-align: left;"><span style="color: #1f2328; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';"><span style="font-size: 16px; background-color: #ffffff;"><img style="display: block; margin-left: auto; margin-right: auto;" src="/images/2025/portraits.png" alt="Bar chart showing the breakout of commissioned portrait types" width="450" height="467" /></span></span></p>
+<p style="text-align: left;">The category 'Other' is doing a lot of heavy lifting here. It includes mixed portraits (e.g. people with their animals, boats, houses, and other types of landscapes.</p>
+<h3 style="text-align: left;">What Are the Most Popular Dog Names Among My Clients?</h3>
+<p style="text-align: left;">Since I have painted so many dogs, it's possible to create a meaningful word cloud of the dogs' names so you can see what names are popular (among the cross-section of the population that commissions dog portraits, at least).</p>
+<p><img style="display: block; margin-left: auto; margin-right: auto;" src="/images/2025/wordcloud_dog.png" alt="A word cloud of dog names: Emma, Max and Buddy are the most popular" width="550" /></p>
+<p style="text-align: center;">&nbsp;</p>
+<p style="text-align: left;">&nbsp;Bailey, Zeke, Molly, Emma, Max and Buddy get a cookie! Sorry about 'Unknown' there on the bottom left&mdash;I've occasionally been asked to paint dogs where a name wasn't provided.</p>
+<h3>How Has my Work Changed Over Time?</h3>
+<p>Like with most artists, my painting business has evolved. I started out painting portraits almost exclusively, then transitioned to put a greater focus on retail artwork. Since 2013 most of my sales have been made at art fairs and shows.</p>
+<p style="text-align: left;"><span style="color: #1f2328; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';"><span style="font-size: 16px; background-color: #ffffff;"><img style="display: block; margin-left: auto; margin-right: auto;" src="/images/2025/trends.png" alt="Graph showing trends in an artist work output over time" width="928" height="530" /></span></span></p>
+<p style="text-align: center;">Changes in the type of painting I've done over time</p>
+<p>&nbsp;</p>
+<h3>What Events Have Affected Sales?</h3>
+<p>To understand dips in sales, you have to look at them in the context of events that occurred in the world in general and my life in particular. The world of fine art is very dependent on external economic factors and personal circumstances.</p>
+<p>Here's how my revenues varied over time and a brief explanation for each change.</p>
+<p style="text-align: center;"><span style="color: #1f2328; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';"><span style="font-size: 16px; background-color: #ffffff;"><img src="/images/2025/revenues.png" alt="Chart showing the variation in an artist's revenues over time" width="928" height="530" /></span></span></p>
+<p>Obviously, the 2008 recession and a cross-country move from Virginia to Seattle had a tremendous impact. I had to rebuild my customer base twice over. My wife's cancer diagnosis in late 2019, combined with the COVID outbreak and another cross-country move from Seattle to Boston made it almost impossible to continue as a viable business, at least for the foreseeable future.</p>
+<h3>What Does Repeat Business Contribute to Sales?</h3>
+<p>I've always known that repeat sales are important. That's especially true for commissioned portraits, mainly because they are so difficult to market, and the sales volume is relatively low. Over 1/3 of my commissioned portraits are done as repeat business.</p>
+<p><img style="display: block; margin-left: auto; margin-right: auto;" src="/images/2025/repeat_commissions_split.png" alt="Column plot showing relative amounts of first time (62%) and repeat business (38%)for commissioned portrait sales." width="750" /></p>
+<p style="text-align: left;">The percentage of repeat sales is much higher for retail art (yet another surprise) and it reinforces the idea that artists often refer customers like these as 'collectors'. Just under 50% of those sales are made to a repeat customer.&nbsp;</p>
+<h3>How Long Does It Take to Generate Repeat Business?</h3>
+<p>It's interesting to examine the timing of these second sales.&nbsp;<img style="display: block; margin-left: auto; margin-right: auto;" src="/images/2025/repeat_commissions_distribution.png" alt="Plot showing how repeat business for portrait sales. Most occurs in the first two years following a sale." width="900" height="552" /></p>
+<p>Most repeat commissioned portrait sales occur in the 12 months immediately following the first portrait sale. This actually makes sense&mdash;a large piece of your one-on-one time with a customer comes when you deliver a portrait. Seeing a spike in repeat business in that first 5 months following a sale coincides with the timeframe in which the first portrait usually gets delivered.</p>
+<p>When I look at the same plot for retail artwork sales, the distribution is less smooth and there are noticeable gaps in the distribution.</p>
+<p><img src="/images/2025/repeat_artwork_distribution.png" /></p>
+<p>The reason for this is that I sell this kind of artwork at art fairs and shows. These events occur on a fairly rigid schedule, so you see noticeable spikes at 6 months and 12 months. The way the schedules work out, there are never any 5-month or 9-11-month intervals between shows</p>
+<p>In multi-day events, some customers even come back on the next day. By the way, these last two plots just show the elapsed time between first and second sales, so if a customer buys yet another piece of work at a later date it's not shown here.</p>
+<h2>Footnotes</h2>
+<h3>Privacy</h3>
+<p>Wherever possible, the data has been anonymized, and all financial data has been normalized. It doesn't make any difference to the value of the analysis, and it helps to maintain privacy.</p>
+<h3>Where is the Data From?</h3>
+<p>As soon as I started doing art full time, I built an application to help me manage my customer base, do invoicing and track expenses. With a few tweaks, that system has been in continual use for 20 years. The data was extracted from there via SQL queries and saved to a CSV file.</p>
+<h3>How Did I Clean and Analyze the Data?</h3>
+<p>You can see the full analysis I did in two parts on my GitHub page:&nbsp;<a href="https://github.com/Nikkinoodl/Data-Analysis-Art/blob/main/Data-Analysis-Portraits-Basic.ipynb" target="_blank" rel="noopener">a basic analysis</a>&nbsp;and slightly more <a href="https://github.com/Nikkinoodl/Data-Analysis-Art/blob/main/Data-Analysis-Portraits-Advanced.ipynb" target="_blank" rel="noopener">advanced analysis</a>. I'd encourage you to take a glance if you're interested in how this is done.</p>
+<p>To start, some data cleanup was required. There were a few records that had null values in otherwise important fields, an outlier in the price field (a very large painting that would otherwise skew the analysis) and some of the fields needed to be converted to numeric data.</p>
+<p>The data analysis was done with Python and the Pandas library. Plotting was done with Matplotlib and the Seaborn libraries.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>

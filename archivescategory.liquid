@@ -1,0 +1,20 @@
+---
+layout: base.njk
+title: "Archive of Paintings"
+description: "A sample collection of paintings, both plein air and studio works."
+permalink: /archives/{{category}}/
+pagination:
+  data: collections.archiveCategories
+  size: 1
+  alias: category
+---
+
+{% assign archives = collections.archive | filterByArchiveCategory: category %}
+<div class="col-12">
+    <h2 class="text-center mb-2">{{ title }}: {{ category }}</h2>
+        <p>Some selected art that shows how my painting style has developed over the years.
+        Newest works are shown first.</p>
+        {% include "archivenav.njk" %}
+</div>
+
+{% include "archivecards.njk" %}

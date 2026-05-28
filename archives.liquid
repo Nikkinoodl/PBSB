@@ -1,0 +1,50 @@
+---
+layout: base.njk
+title: "Archive of Paintings"
+permalink: /archives/
+categories:
+  - name: landscapes
+    src: "/images/Landscape.jpg"
+    alt: "Landscape painting of Nisqually reserve in WA"
+    desc: "Landscapes"
+  - name: other
+    src: "/images/Sheep.jpg"
+    alt: "Oil painting of a sheep in profile"
+    desc: "Animals"
+  - name: dogs
+    src: "/images/Dog.jpg"
+    alt: "Oil painting of a dog in profile"
+    desc: "Dogs"
+  - name: horses
+    src: "/images/Horse.jpg" 
+    alt: "Oil paintingof a horse grazing"
+    desc: "Horses"
+  - name: people
+    src: "/images/Person.jpg"
+    alt: "Studio oil painting of a model"
+    desc: "Portraits"
+---
+
+<div class="col-12">
+    <h2 class="text-center mb-2">{{ title }}</h2>
+        <p>These are some samples of paintings that I've created over the years, grouped by category.
+        You will also find many of these images in my blog, but here they are presented without much blurb so that you can scroll
+        through them quickly.</p>
+        <p>Like the rest of the site, this section is still a work in progress and I will be making it tider and easier to navigate in time.</p>
+</div>
+<div class = "row card-deck row-cols-1 row-cols-md-3 text-center">
+    {% for category in categories %}
+        <div class="col mb-4">
+            <div class="card imageBox h-100 p-1">
+                <a class="stretched-link" href="{{ category.name }}/">
+                    <img class="img img-fluid m-auto" style="height:10rem;" src="{{ category.src }}" alt='{{ category.alt }}' />
+                </a>
+                <div class="card-body">
+                    <h4 class="card-title mt-3">
+                        {{ category.desc }}
+                    </h4>
+                </div>
+            </div>      
+        </div>       
+    {% endfor %}
+</div> 

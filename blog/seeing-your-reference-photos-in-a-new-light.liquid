@@ -1,0 +1,67 @@
+--- 
+layout: post.njk
+title: "Seeing Your Reference Photos in a New Light"
+permalink: /blog/seeing-your-reference-photos-in-a-new-light/ 
+date: 2024-01-30 16:07:17
+shortdate: 30 Jan 2024
+image: /images/2024/Ballard-industrial-Lomo-sm.JPG
+description: "This article shows some of the GIMP plugins I use for processing reference photos and provides links where you can download them for your own use. All for free!"
+categories:
+  - gimp
+  - photography
+tags: post
+--- 
+
+
+<p>For almost the entirety of my painting career I have used digital photography to capture my reference photos. Even when painting in plein air, I've always taken a camera with me.</p>
+<p>I find that reference photos are much more useful if I can get them close to the way I want my paintings to look (I've never been much interested in doing it the other way round). The problem is that image processing with software like Photoshop and GIMP can be complicated, time consuming and difficult to replicate when doing all but the most basic things. But that changed when I discovered GIMP plugins, and I realized that multiple operations could be done in a single click.</p>
+<p>This article is about some of the GIMP plugins I've created and which I use to process my reference photos. They are freely available for you to download, and you can also use them as the starting point for creating your own effects; I am publishing this blog post in conjunction with an article on <a href="/blog/a-short-guide-to-gimp-plugins/" target="_blank" rel="noopener">how to write your own plugins</a> for GIMP.</p>
+<h3>Matte-Fade</h3>
+<p>I developed this plugin in part to emulate the work of photographer <a href="https://www.claregallagher.co.uk/" target="_blank" rel="noopener">Clare Gallagher</a>. Her work has a unique look and a consistency that really appeals to me.</p>
+<p>You can download it here:&nbsp;<a href="https://github.com/Nikkinoodl/Matte-Fade" target="_blank" rel="noopener">https://github.com/Nikkinoodl/Matte-Fade</a></p>
+<p>The effect changes the curves of the image then overlays a gradient of colors, followed by overexposure and vignetting. The end result has some of the qualities of an older film print and is super for working into the light.</p>
+<p>Here I've used a teal to purple gradient overlay. Most of the softness in the image comes from the old lens.</p>
+<p style="text-align: center;"><img src="/images/2024/Morning-Light-Studio-Green-sm.jpg" alt="Artist's studio with pale green light coming in through a large window " width="650" height="435" /></p>
+<p style="text-align: center;">My old studio. Pentax K10D with Tokina 28mm manual lens</p>
+<p>In the next image I used a transparent to purple gradient overlay to reinforce colors that already existed in the scene. I used a much sharper lens here, but a shallow depth of field because I wanted the background to be unresolved.</p>
+<p><img style="display: block; margin-left: auto; margin-right: auto;" src="/images/2024/Studio-Palette-sm.JPG" alt="A close-up photo of a painter's palette with blue rubber gloves" width="650" height="425" /></p>
+<p style="text-align: center;">Palette. Pentax KP with Pentax 40mm HD DA Limited lens.</p>
+<h3>Instagram</h3>
+<p>I re-worked Mario Crippa's Instagram plugins, combined them into a single plugin, simplified them and updated them to work with GIMP 2.10. These were one of the first GIMP plugins that I came across and I have used them extensively, although some of the scripts are more appealing than others.</p>
+<p>You can download my version here:&nbsp;<a href="https://github.com/Nikkinoodl/Instagram" target="_blank" rel="noopener">https://github.com/Nikkinoodl/Instagram</a></p>
+<p>This is the Brannan effect applied to a photo that had a lot of green &mdash; I used it for a painting that I created with a limited palette.</p>
+<p><img style="display: block; margin-left: auto; margin-right: auto;" src="/images/2024/Meadow-Grove-Brannan-sm.jpg" alt="A photo of a field on a farm in the Virginia Piedmont with some hay bales in the foreground" width="650" height="435" /></p>
+<p style="text-align: center;">Meadow Grove Farm. Pentax K10D with SMC Pentax 50mm FA lens.</p>
+<p>Some of the effects can help you quickly get into a different artistic mindset, like the Poprocket effect shown here.</p>
+<p><img style="display: block; margin-left: auto; margin-right: auto;" src="/images/2024/Ace-Poprocket-sm.jpg" alt="A photo of an old Ace Hardware sign with peeling paint" width="650" height="488" /></p>
+<p style="text-align: center;">Ace Hardware. iPhone SE.</p>
+<h3>Lomo</h3>
+<p>This plugin emulates the retro photography look of Diana and Holga cameras that were the inspiration behind Instagram's effects and the Lomography movement.</p>
+<p>You can download it here:&nbsp;<a href="https://github.com/Nikkinoodl/Lomo" target="_blank" rel="noopener">https://github.com/Nikkinoodl/Lomo</a></p>
+<p>This script is written in Scheme, rather than Python, and the code is more difficult to understand. It has been around for something like 20 years in different forms, although I only discovered it recently. This version is based on the Elsamuko Lomo script which I updated to work in GIMP 2.10.</p>
+<p>This plugin contains a lot of different effects and I find it works best for me if I use them sparingly. In this photo some of the retro look comes from using an old, manual lens.</p>
+<p><img style="display: block; margin-left: auto; margin-right: auto;" src="/images/2024/Ballard-industrial-Lomo-sm.JPG" alt="A retro looking photo of a street in an industrial area with a red car in the center of the image" width="650" height="435" /></p>
+<p style="text-align: center;">Ballard Industrial. Pentax K10D with Photax 135mm manual lens.</p>
+<p>This second photo was taken with a better camera and lens. I used the plugin more for artistic effect rather than for deliberately trying to give the photo a retro look.</p>
+<p><img style="display: block; margin-left: auto; margin-right: auto;" src="/images/2024/Ballard-pizza-Lomo-sm.JPG" alt="A white delivery van outside a pizza shop in the old section of Ballard" width="650" height="432" /></p>
+<p style="text-align: center;">Ballard Pizza. Pentax KP with Pentax 40mm HD DA Limited lens.</p>
+<h3>Nykvist</h3>
+<p>This final plugin is inspired by the work of photographer and fellow Pentax user, Annie Nykvist.</p>
+<p>You can download it here:&nbsp;<a href="https://github.com/Nikkinoodl/Nykvist" target="_blank" rel="noopener">https://github.com/Nikkinoodl/Nykvist</a></p>
+<p>It was the first plugin I developed for my own use, and it gave me the chance to learn how to create a GIMP plugin while also coming to grips with what turned out to be a complex, multilayered effect.</p>
+<p>It creates a black and white image with sharpening at the center, a soft glow surround and fade out at the corners. It is particularly suited for animal close ups. Great to use if you are thinking of doing portraits in pencil.</p>
+<p><img style="display: block; margin-left: auto; margin-right: auto;" src="/images/2024/Rabbit-Nykvist.jpg" alt="A close-up black and white image of a rabbit with a soft glow effect" width="650" height="497" /></p>
+<p style="text-align: center;">Rabbit. Pentax K10D with Tamron 70-300 FA lens.</p>
+<p>And that's all folks. I do hope you will try some of these plugins for yourself and I would be delighted if I inspired just one reader to try their hand at creating a plugin of their own. Don't be afraid to take one of my plugins and tweak it even if only a little.</p>
+<h3>Adjusting Effects</h3>
+<p>All these plugins share one design feature &mdash; each component of the overall effect is created in its own new layer. You can fine tune any effect by changing the opacity of each layer.</p>
+<p>Some plugins also allow parameters to be changed or switched on/off via an input screen.</p>
+<p>If you add an effect to an image and don't like it, you can either revert the image to the saved version (using menu option /File/Revert) or delete the effect layers by right clicking on the layer and selecting "Delete" (/Windows/Dockable Dialogs/Layers, or Ctrl+L will display the layers).</p>
+<h3>Installing the plugins</h3>
+<p>Download the relevant <em>.py</em> file from one of the links above then copy it to one of the following locations.</p>
+<p>Windows:</p>
+<pre class="language-markup" style="background-color: #f5f2f0; padding: 1rem;"><code>C:\user\&lt;username&gt;\AppData\Roaming\GIMP\2.10\plugins</code></pre>
+<p>Linux:</p>
+<pre class="language-markup" style="background-color: #f5f2f0; padding: 1rem;"><code>/usr/&lt;username&gt;/.config/GIMP/2.10/plugins</code></pre>
+<p>The Lomo plugin is a script file which must go into a slightly different location. Download <em>pbsb-lomo.scm</em> and copy it to the scripts folder which you'll find alongside the plugins folder.</p>
+<p>Open GIMP and you're now ready to go!</p>

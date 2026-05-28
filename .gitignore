@@ -1,0 +1,24 @@
+# Node / Eleventy
+node_modules/
+.npm/
+.cache/
+dist/
+_site/
+
+# Environment / secrets
+.env
+.env.local
+*.pem
+*.key
+
+# System files and possible cache artifacts
+.DS_Store
+Thumbs.db
+.tmp/
+
+#Database and csv files
+*.csv
+*.db
+
+#Blogifier Conversion
+Blogifier-Conversion-Workbook.ipynb

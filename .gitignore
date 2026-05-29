@@ -21,4 +21,5 @@ Thumbs.db
 *.db
 
 #Blogifier Conversion
+_data/.pynb_checkpoints/
 Blogifier-Conversion-Workbook.ipynb

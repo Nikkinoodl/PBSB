@@ -15,6 +15,7 @@ _site/
 .DS_Store
 Thumbs.db
 .tmp/
+.gitignore
 
 #Database and csv files
 *.csv

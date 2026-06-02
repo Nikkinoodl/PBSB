@@ -1,15 +1,15 @@
 # An Eleventy Website (Source Code)
 
-This repository contains the source code for the Eleventy‑powered static website which is found here:
+This repository contains the source code for my own Eleventy‑powered static website:
 
 https://portraitsbysimonbland.com
 
-The live site is hosted on AWS S3, but this repo exists as a reference for how the site is built — something I can link to in blog posts or revisit later when I want to refresh my memory.
+The live site is hosted on AWS S3. This repo serves as a reference — something I can link to in blog posts or revisit later when I want to refresh my memory — and as a template for anyone else who may get benefit from it.
 
 ## What This Project Is
 
 This is a simple, fast, no‑database static site built with **Eleventy (11ty)**.  
-All of the layouts, templates, and content live in the main repo folder and its sub-folders.Eleventy compiles everything into a folder named `_site/` which is uploaded to S3 for hosting.
+All of the layouts, templates, and content live in the main repo folder and its sub-folders. Eleventy compiles everything into a folder named `_site/` (not included in this repo) which is then uploaded to S3 for hosting.
 
 ## Working With the Site
 
@@ -21,17 +21,17 @@ cd <your folder location>
 npx @11ty/eleventy --serve
 ```
 
-Eleventy will create the `_site/` folder with the final static files then watch for changes and continuously rebuild the site. 
+Eleventy will create the `_site/` folder with the final static files then watch for changes and continuously rebuild the site as you tinker with the files. 
 
 ## Deployment (AWS S3)
 
-The site is deployed by syncing the `_site/` directory to an S3 bucket configured for static website hosting. CloudFront acts as the content delivery network so that pages are served from locations close to the user.
+The site is deployed by syncing the `_site/` directory to an S3 bucket configured for static website hosting. CloudFront is a content delivery network that serves pages from locations close to the user and it also supports HTTPS access.
 
-To set up AWS S3 and Cloudfront, use the document below to work through the process. For my own website this was a straightforward process.
+To set up AWS S3 and Cloudfront, use the document below to work through the process.
 
 https://docs.aws.amazon.com/AmazonS3/latest/userguide/HostingWebsiteOnS3Setup.html
 
-Example deployment command:
+Deployment can be done from your own device providing you have set up IAM credentials that allow for S3 read/write. To deploy from Windows Powershell:
 
 ```
 aws s3 sync _site/ s3://your-bucket-name --delete
@@ -53,7 +53,7 @@ aws cloudfront create-invalidation --distribution-id  *<DISTRIBUTION_ID>* --path
 
 Building your own website is not for everyone, but a simple site is very easy to do.
 
-You don't need to build everything right from the start. I suggest you begin small and add to it over time. In my case, I started with a single *home* page, just a few lines of text, and published it. Then I added an *about* page.
+You don't need to build out a complete website right from the start. I suggest you begin small and add to it over time. In my case, I started with a single *home* page, just a few lines of text, and published it. Then I added an *about* page.
 
 After that, I worked on data migration for some time before I brought all my old blog pages across and worked on the layout you see today. After I re-launched the website I let it sit in production for a month or so while I migrated the old archive pages across.
 

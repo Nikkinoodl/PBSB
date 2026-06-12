@@ -27,6 +27,15 @@
       {% include "footer.njk" %}
     </div>
     <script src="/assets/blog-custom.js"></script>
+    {% if "<pre>" in content %}
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.min.css">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+      <!-- Load only the languages we need -->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/html.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/powershell.min.js"></script>
+      <script>hljs.highlightAll();</script>
+    {% endif %}
   </body>
 </html>
 <script type="application/ld+json">

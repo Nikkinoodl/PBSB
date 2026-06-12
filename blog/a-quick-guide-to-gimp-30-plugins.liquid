@@ -1,0 +1,348 @@
+--- 
+layout: post.njk
+title: "A Quick Guide to Gimp 3 Plugins"
+permalink: /blog/a-quick-guide-to-gimp-30-plugins/ 
+date: 2026-06-02 01:53:38
+shortdate: 02 Jun 2026
+image: /images/2026/Python.jpg
+description: "This is the second in a series of articles about getting started with GIMP plugins. In this article, I focus on GIMP 3."
+categories:
+  - None
+tags: post
+--- 
+
+
+<p>In a <a href="https://portraitsbysimonbland.com/blog/a-short-guide-to-gimp-plugins/">previous article</a>, I provided a simple how-to guide for building your own plugins for GIMP 2.10. Now I'm back to talk some more about image manipulation with GIMP plugins in the new version, GIMP 3.</p>
+<p>At a basic level, the two plugin architectures both automate the manipulation of your images so that effects are applied quickly and consistently, and they make effects repeatable without having to remember or relearn anything. However, the plugin capabilities of the new version have been completely revised and any existing plugins must be rewritten to work in GIMP 3.</p>
+<p>Was upgrading worth all the effort for me? A qualified "yes". In this article I'll discuss what the new plugin architecture has to offer.</p>
+<h3>New and Important</h3>
+<p>A GIMP 3 plugin <strong>must</strong> be installed inside a sub-folder with the same name as the plugin. In Windows the installation location will look something like this:</p>
+<pre><code class="language-powershell">C:\user\<username>\AppData\Roaming\GIMP\3.0\plug-ins\gimp_desat_colorize\gimp_desat_colorize.py
+</code></pre>
+<h3>A GIMP 3 Plugin Sample</h3>
+<p>To get started, here is a sample plugin in the new format:</p>
+<pre><code class="language-python">#!/usr/bin/env python3
+
+import sys, gi
+
+from gi.repository import Gimp, GLib
+gi.require_version('Gimp', '3.0')
+
+class Desat_Colorize (Gimp.PlugIn):
+    def do_query_procedures(self):
+        # This is the name that appears in the procedure browser
+        return [ "desat-colorize" ]
+
+    def do_set_i18n (self, name):
+        # Used to indicate if translations are required
+        return False
+
+    def do_create_procedure(self, name):
+        # This is where most of the initializing is done - note that self.run refers to the run method in the class,
+        # but any method can be called
+
+        procedure = Gimp.ImageProcedure.new(self, name,
+                                            Gimp.PDBProcType.PLUGIN,
+                                            self.run, None)
+        procedure.set_image_types("*")
+        procedure.set_menu_label("Desat and Colorize")
+        procedure.add_menu_path('<Image>/Filters/Simon/')
+        procedure.set_documentation("Desaturates the entire visible image to Payne's Grey",
+                                    "A modern version of black and white",
+                                    name)
+        procedure.set_attribution("Simon Bland", "Simon Bland", "2025")
+        return procedure
+
+    def run(self, procedure, run_mode, image, drawables, args, run_data):
+        #This is the main body of the plugin where the actual effects are created and applied.
+        
+        # Start an undo group so the whole operation is one step in history
+        image.undo_group_start()
+
+        # Create and insert a new layer from the visible image
+        copyLayer1 = Gimp.Layer.new_from_visible(image, image, "Desaturated")
+        image.insert_layer(copyLayer1, None, -1)
+
+        # Desaturate
+        copyLayer1.desaturate(Gimp.DesaturateMode.VALUE)
+        
+        # Create another new layer by copying the existing new layer
+        copyLayer2 = Gimp.Layer.copy(copyLayer1)
+        image.insert_layer( copyLayer2, None, -1)
+
+        copyLayer2.set_name("Colorized")
+        copyLayer2.set_opacity(80)
+
+        # Run colorize_hsl with h = 215, s = 11, l = 0
+        copyLayer2.colorize_hsl( 215, 11, 0)
+
+        #Close the undo group
+        image.undo_group_end()
+        
+        return procedure.new_return_values(Gimp.PDBStatusType.SUCCESS, GLib.Error())
+
+Gimp.main(Desat_Colorize.__gtype__, sys.argv)
+</code></pre>
+<p>This plugin desaturates an image and changes its color scheme to a Payne's Gray. It is just about the simplest plugin I could come up with that didn't simply write some messages to the error window.</p>
+<p>On comparing it to the GIMP 2.10 plugin example I provided in the previous article, you will see that the new version is lengthier, even though it has less functionality. As before, most of the code you see is boilerplate and the part doing image manipulation is just a couple of lines.</p>
+<h3>Deconstructing the Plugin</h3>
+<p>Let's go through each part of the plugin so that we can understand what each it does (I have omitted some comments from these code samples to avoid confusion).</p>
+<h4>1. Python Version and Importing Libraries</h4>
+<p>The first few lines tell the plugin which version of Python is used and which libraries are needed to support the plugin code. This, I think, is the minimum set of imports and libraries you will need to run a plugin that manipulates the image.</p>
+<pre><code class="language-python">#! /usr/bin/env python3
+
+import sys, gi
+
+from gi.repository import Gimp, GLib
+gi.require_version('Gimp', '3.0')
+</code></pre>
+<p>Other libraries are usually required. You can see examples in links that I've provided at the bottom of this article.</p>
+<h4>2. A Class</h4>
+<p>This sample plugin contains a single class which is a collection of properties, methods and functions that define the plugin (most plugins that you create as a casual Python developer will probably just need a single class).</p>
+<pre><code class="language-python">class Desat_Colorize (Gimp.PlugIn):
+</code></pre>
+<p>The functions in the class define how the plugin is initialized, what language translations are required, where it goes in the menu, what happens when it runs, and so on. Let's look at them one-by-one:</p>
+<h5>2.1 do_query_procedures(self)</h5>
+<p>This function returns a name for the procedure that will be displayed by the procedure browser (it's what you see if you browse content in the Python-Fu console), and I believe it is also used if the plugin is invoked by calling from another plugin (yes, that's a thing).</p>
+<p>Plugins have four types of name: this one, the file name, the class name that's used internally within the plugin, and the name displayed in the menu (if used). Trust me when I say that it is better for your sanity if you stick with the same name throughout (although you will need to interchange the hyphen ( - ) symbol which should be used in procedure names with the underscore ( _ ) symbol elsewhere to avoid problems with Python. The filename of the plugin will usually have a <em>Gimp_</em> stuck in front of it. In the case of the sample above, the names I used were:</p>
+<table class="table table-bordered mb-5">
+<thead>
+<tr>
+<th>name type</th>
+<th style="text-align:left">name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>procedure name</td>
+<td style="text-align:left">desat-colorize</td>
+</tr>
+<tr>
+<td>class name</td>
+<td style="text-align:left">Desat_Colorize</td>
+</tr>
+<tr>
+<td>menu item name</td>
+<td style="text-align:left">Desat and Colorize</td>
+</tr>
+<tr>
+<td>filename</td>
+<td style="text-align:left">Gimp_Desat_Colorize.py</td>
+</tr>
+</tbody>
+</table>
+<h5>2.2 do_set_i18n (self, name)</h5>
+<p>This function provides a mechanism that allows plugins to install their own language-specific message catalogs, if required. I've never used this to return anything other than <em>false</em>, and I've often omitted it entirely from my plugins. This is fairly advanced stuff and you'll have to do some research if you think this is needed for your own work.</p>
+<h5>2.3 do_create_procedure(self, name)</h5>
+<p>Like the <em>register</em> call in previous versions, this function defines what image types can be used and where the plugin will be installed in the GIMP menu.</p>
+<p>The line below tells GIMP which functions in this class will be invoked when the plugin procedure is created:</p>
+<pre><code class="language-python"> procedure = Gimp.ImageProcedure.new(self, name,
+                                            Gimp.PDBProcType.PLUGIN,
+                                            self.run, None)
+</code></pre>
+<p><em>self.run</em> refers to the function below, <em>self</em> indicating that the function is a member of this same class. You can call a function that's external to the class if desired.</p>
+<h5>2.4 run(self, procedure, run_mode, image, drawables, args, run_data)</h5>
+<p>This last function is the main body of the plugin where the actual effects are created and applied.</p>
+<p>In the example above, I'm creating two new layers, the first is a copy of the original visible image which is then desaturated. The second layer is a copy of the desaturated layer which is then colorized.</p>
+<p>I do these operations on new, separate layers even though I could have applied both operations directly to the original image. This helps me to see how each effect changes the final image. I can then adjust the strength of the effect or even remove it altogether.</p>
+<pre><code class="language-python">def run(self, procedure, run_mode, image, drawables, args, run_data):
+                
+    image.undo_group_start()
+
+    # Create and insert a new layer from the visible image
+    copyLayer1 = Gimp.Layer.new_from_visible(image, image, "Desaturated")
+    image.insert_layer(copyLayer1, None, -1)
+
+    copyLayer1.desaturate(Gimp.DesaturateMode.VALUE)
+        
+    # Create another new layer by copying the existing new layer
+    copyLayer2 = Gimp.Layer.copy(copyLayer1)
+    image.insert_layer( copyLayer2, None, -1)
+
+    copyLayer2.set_name("Colorized")
+    copyLayer2.set_opacity(80)
+
+    copyLayer2.colorize_hsl( 215, 11, 0)
+
+    image.undo_group_end()
+        
+    return procedure.new_return_values(Gimp.PDBStatusType.SUCCESS, GLib.Error())
+</code></pre>
+<p>I have sandwiched the image manipulation code inside an undo group. This lets me back out all of the plugin's changes if I don't like the effect.</p>
+<h4>3. An Entrypoint</h4>
+<p>The final part of this plugin is a line of code that hands over the class to GIMP. I would expect this to be unchanged in every plugin you encounter, except for the name of the class being invoked, of course.</p>
+<pre><code class="language-python">Gimp.main(Desat_Colorize.__gtype__, sys.argv)
+</code></pre>
+<h3>Defining Input Parameters and UI</h3>
+<p>It is likely that you will want to enter some values of your own each time a plugin is run. The code required to do this is more complex than in previous versions, but the implementation is more versatile.</p>
+<p>Note that additional libraries must be imported. The entire code for this plugin is available in the links at the end of this article, the entire plugin is not shown here for better clarity:</p>
+<pre><code class="language-python">import sys, math, gi
+from gi.repository import Gimp, GLib, Babl, Gegl, GObject, GimpUi
+
+gi.require_version('Gegl', '0.4')
+gi.require_version("Gimp", "3.0")
+gi.require_version('GimpUi', '3.0')
+gi.require_version('Babl', '0.1')
+
+class Nykvist(Gimp.PlugIn):
+    def do_query_procedures(self):
+        return ["nykvist"]
+
+    def do_create_procedure(self, name):
+        Gegl.init(None)
+        Babl.init()
+        proc = Gimp.ImageProcedure.new(
+            self,
+            name,
+            Gimp.PDBProcType.PLUGIN,
+            self.run,
+            None
+        )
+        proc.set_image_types("*")
+        proc.set_menu_label("Nykvist")
+        proc.add_menu_path('<Image>/Filters/Simon')
+        proc.set_documentation("Desaturates and adds a softglow effect",
+                                "Desaturates and adds a softglow effect. Effect is applied to the entire visible image.",
+                                name)
+        proc.set_attribution("Simon Bland", "Simon Bland", "2025")
+
+        proc.add_double_argument("brightAdjust", "Brightness", "Brightness adjustment", -0.5, 0.5, 0.4, GObject.ParamFlags.READWRITE)
+        proc.add_double_argument("contrastAdjust", "Contrast", "Contrast adjustment", -0.5, 0.5, 0.3, GObject.ParamFlags.READWRITE)
+        proc.add_boolean_argument("isGlow", "Glow effect", "Enable glow effect", True, GObject.ParamFlags.READWRITE)
+        proc.add_boolean_argument("isSharp", "Sharpen effect", "Enable sharpen effect", True, GObject.ParamFlags.READWRITE)
+
+        return proc
+</code></pre>
+<p>Here, we are creating four arguments. The first two allow us to adjust values for the brightness and contrast, the second two are booleans that will control program flow.</p>
+<p>Then, in the <em>run</em> function, a user dialog box is created where these arguments can be changed by the user. Once the dialog box OK button is clicked, the dialog is closed and the values are returned to the program whence they can be assigned to variables.</p>
+<pre><code class="language-python">def run(self, procedure, run_mode, image, drawable, config, data):
+
+    Gegl.init(None)
+
+    # Start an undo group so the whole operation is one step in history
+    image.undo_group_start()
+ 
+    # Show a dialog box to capture input parameters. Do not attempt to show a dialog if called non-interactively.
+    if run_mode == Gimp.RunMode.INTERACTIVE:
+        GimpUi.init('nykvist')
+
+        dialog = GimpUi.ProcedureDialog(procedure=procedure, config=config)
+        dialog.fill(['brightAdjust', 'contrastAdjust', 'isGlow', 'isSharp'])
+
+        is_ok_pressed = dialog.run()
+            
+        if not dialog.run():
+            dialog.destroy()
+            image.undo_group_end()
+            Gegl.exit()
+            return procedure.new_return_values(Gimp.PDBStatusType.CANCEL, None)
+            
+        else:
+            dialog.destroy()
+        
+    # Dialog variables
+    brightAdjust = config.get_property('brightAdjust')
+    contrastAdjust = config.get_property('contrastAdjust')
+    isGlow = config.get_property('isGlow')
+    isSharp = config.get_property('isSharp')
+</code></pre>
+<p>In this simplified example, the four variables are now available to change settings and control program flow.</p>
+<p>Setting values for use in a drop down box are a bit more complex. I have left them out of this article, but they can be seen in some of the more advanced plugins on my GitHub page, for example the <a href="https://github.com/Nikkinoodl/Instagram/blob/main/3.0/gimp_instagram.py">Instagram Effects</a></p>
+<h3>Other Changes</h3>
+<p>A major change in GIMP 3 is that the use of procedural database (PDB) calls has largely been eliminated. Most features can now be called directly and in an object-oriented-like way. It makes it possible to write code that's <em>slightly</em> more elegant, efficient and easier to understand.</p>
+<p>For example:</p>
+<pre><code class="language-python">pdb.gimp_desaturate_full(copyLayer1, DESATURATE-VALUE)
+</code></pre>
+<p>becomes</p>
+<pre><code class="language-python">copyLayer1.desaturate(Gimp.DesaturateMode.VALUE)
+</code></pre>
+<h3>GEGL Operations</h3>
+<p>Perhaps the biggest functional change is that many operations and other filters are now called as GEGL operations (which are not shown in the above examples). I find that they do require a little more code to invoke, but the syntax is standardized and consistent across the GIMP platform. A major new feature is that many of these operations can be applied non-destructively and the same operations are being called when GIMP is used interactively. I've added more about this in a later section.</p>
+<p><a href="https://gegl.org/operations/">GEGL</a> is an open source library of image manipulation functions that is now available throughout GIMP 3.  They standardize the way in which image operations are performed and many can be applied non-destructively. Since most can be used both interactively and non-interactively, it is also possible to script and save a graph of GEGL operations interactively within the GIMP application, something which you might find to be simpler alternative to creating a plugin.</p>
+<p>Here is an example of an unsharp mask effect being applied to a new layer.</p>
+<pre><code class="language-python">#copy the visible image for sharpening
+copyLayer6=Gimp.Layer.new_from_visible(image, image, "Sharpen")
+image.insert_layer(copyLayer6, None, -1)
+
+# Apply the sharpen(unsharp mask) GEGL effect. Not all settings are available.
+filter = Gimp.DrawableFilter.new(copyLayer6, "gegl:unsharp-mask", "Unsharp Mask")
+filter.set_blend_mode(Gimp.LayerMode.NORMAL)
+filter.set_opacity(100)
+config = filter.get_config()
+config.set_property('threshold', 0.0)
+filter.update()
+      
+copyLayer6.append_filter(filter)
+</code></pre>
+<p>Here we create a new layer from the visible image then apply an unsharp mask non-destructively, We set just one property for the unsharp mask threshold value.</p>
+<p>Once the plugin has run, you can click on the <em>fx</em> symbol in the image's "Sharpen" layer to adjust the threshold setting.</p>
+<p>I've made extensive use of GEGL functions in my own plugins.  You can find examples in any of the links at the bottom of this article.</p>
+<h3>Linear vs Perceptual Light</h3>
+<p>When using GIMP 3 plugins you will find that operations now occur in linear light rather than perceptual light by default. It causes some effects to look very different when done in GIMP 3 if you don't take it into account (although this does not occur when using GIMP interactively). I found this to be a problem especially with the <em>levels_stretch</em> and <em>curves_spline</em> functions. Each required a different workaround which I've shown below.</p>
+<h4>Levels stretch</h4>
+<p>This is an easy workaround which I used when replicating Martin Evening's XPRO LAB method.</p>
+<pre><code class="language-python">currentLayer.levels_stretch()
+currentLayer.levels(Gimp.HistogramChannel.VALUE, 0, 1.0, True, 0.6, 0, 1.0, True)
+</code></pre>
+<p>In an interactive session (when you are using the GIMP UI), hitting the auto button in the <em>levels stretch</em> screen will default to perceptual light. This is not available when running <em>levels stretch</em> from a plugin. Instead, the gamma value of the layer is set to 0.6 to give the effect of a levels stretch in perceptual light rather than linear light.</p>
+<h4>Curves spline</h4>
+<p>This is a more complex workaround, but very effective.</p>
+<pre><code class="language-python">self.sRGBCurvesSpline(baseLayer, Gimp.HistogramChannel.RED, [0, 0, 154/255, 141/255, 232/255, 1.0])
+</code></pre>
+<p>This is a custom function that creates a lookup table to map linear light to a perceptual light curve. It converts the sRGB curves to linear light, applies the curves spline function, then converts the linear light curves back to sRGB.</p>
+<pre><code class="language-python">def sRGBCurvesSpline(self, drawable, channel, spline):
+    # Build LUTs (or cache them globally)
+    lin_lut, srgb_lut = self.FastSRGBLuts()
+     
+    # Apply sRGB -> linear LUT
+    drawable.curves_explicit(channel, lin_lut)
+
+    # Apply spline in linear space
+    drawable.curves_spline(channel, spline)
+
+    # Convert back linear -> sRGB
+    drawable.curves_explicit(channel, srgb_lut)
+
+def FastSRGBLuts(self, samplecount=1024):
+    pow = math.pow
+    sc = samplecount - 1.0
+
+    # sRGB -> linear
+    linofx = [
+        (x * 12.92) if x < 0.0031308
+        else (1.055 * pow(x, 1.0/2.4) - 0.055)
+        for x in (i / sc for i in range(samplecount))
+    ]
+
+    # linear -> sRGB
+    srgbofx = [
+        (x / 12.92) if x < 0.04045
+        else pow((x + 0.055) / 1.055, 2.4)
+        for x in (i / sc for i in range(samplecount))
+    ]
+
+    return linofx, srgbofx
+
+def ConvertSRGBToLinear(self, values, lin_lut):
+    sc = len(lin_lut) - 1
+    return [lin_lut[int(v * sc)] for v in values]
+
+def ConvertLinearToSRGB(self, values, srgb_lut):
+    sc = len(srgb_lut) - 1
+    return [srgb_lut[int(v * sc)] for v in values]
+</code></pre>
+<h3>Support Documentation</h3>
+<p>The support documentation is essential to have on hand when writing plugins, although you should note that it is written for <em>C</em> programmers and some functions are implemented slightly differently or not at all in Python.</p>
+<p><a href="https://developer.gimp.org/api/3.0/libgimp/index.html">https://developer.gimp.org/api/3.0/libgimp/index.html</a>
+<a href="https://gegl.org/operations/">https://gegl.org/operations/</a></p>
+<p>You can also find some official GIMP samples, but they do tend to jump in at the deep end:</p>
+<p><a href="https://developer.gimp.org/resource/writing-a-plug-in/tutorial-python/">https://developer.gimp.org/resource/writing-a-plug-in/tutorial-python/</a></p>
+<h3>Links to My Own Plugins</h3>
+<p>The easiest way to start with plugin development is to start with another plugin and modify it. Once you've done that, creating new plugins from scratch will seem much easier. All my current plugins can be found in my GitHub repositories and versions are available for both GIMP 2.10 and GIMP 3. You can use these freely as templates for plugins of your own.</p>
+<p>In order of complexity they are:</p>
+<ul>
+<li><a href="https://github.com/Nikkinoodl/Nykvist">https://github.com/Nikkinoodl/Nykvist</a></li>
+<li><a href="https://github.com/Nikkinoodl/Matte-Fade">https://github.com/Nikkinoodl/Matte-Fade</a></li>
+<li><a href="https://github.com/Nikkinoodl/Instagram">https://github.com/Nikkinoodl/Instagram</a></li>
+<li><a href="https://github.com/Nikkinoodl/Lomo">https://github.com/Nikkinoodl/Lomo</a></li>
+</ul>

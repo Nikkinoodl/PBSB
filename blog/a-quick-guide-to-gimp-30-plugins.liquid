@@ -17,7 +17,7 @@ tags: post
 <p>Was upgrading worth all the effort for me? A qualified "yes". In this article I'll discuss what the new plugin architecture has to offer.</p>
 <h3>New and Important</h3>
 <p>A GIMP 3 plugin <strong>must</strong> be installed inside a sub-folder with the same name as the plugin. In Windows the installation location will look something like this:</p>
-<pre><code class="language-powershell">C:\user\<username>\AppData\Roaming\GIMP\3.0\plug-ins\gimp_desat_colorize\gimp_desat_colorize.py
+<pre><code class="language-powershell">C:\Users\username\AppData\Roaming\GIMP\3.0\plug-ins\gimp_desat_colorize\gimp_desat_colorize.py
 </code></pre>
 <h3>A GIMP 3 Plugin Sample</h3>
 <p>To get started, here is a sample plugin in the new format:</p>
@@ -86,7 +86,7 @@ Gimp.main(Desat_Colorize.__gtype__, sys.argv)
 <p>This plugin desaturates an image and changes its color scheme to a Payne's Gray. It is just about the simplest plugin I could come up with that didn't simply write some messages to the error window.</p>
 <p>On comparing it to the GIMP 2.10 plugin example I provided in the previous article, you will see that the new version is lengthier, even though it has less functionality. As before, most of the code you see is boilerplate and the part doing image manipulation is just a couple of lines.</p>
 <h3>Deconstructing the Plugin</h3>
-<p>Let's go through each part of the plugin so that we can understand what each it does (I have omitted some comments from these code samples to avoid confusion).</p>
+<p>Let's go through each part of the plugin so that we can understand what each does (I have omitted some comments from these code samples to avoid confusion).</p>
 <h4>1. Python Version and Importing Libraries</h4>
 <p>The first few lines tell the plugin which version of Python is used and which libraries are needed to support the plugin code. This, I think, is the minimum set of imports and libraries you will need to run a plugin that manipulates the image.</p>
 <pre><code class="language-python">#! /usr/bin/env python3

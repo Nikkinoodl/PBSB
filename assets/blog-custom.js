@@ -1,7 +1,7 @@
 ﻿document.addEventListener("DOMContentLoaded", function () {
-  const imageSelector = 'img:not([class=""])';
-  const imgClass = "figure-img img-fluid center-block";
-  const pClass = "figure-caption";
+  const imageSelector = 'img:not([class=".figure-img"])';
+  const imgClass = "figure-img img-fluid center-block mt-3";
+  const pClass = "figure-caption mb-3";
 
   const images = document.querySelectorAll(imageSelector);
 
@@ -29,7 +29,7 @@
       img.insertAdjacentElement("beforebegin", figure);
       figure.appendChild(img);
       figure.appendChild(nextP);
-      nextP.classList.add(pClass);
+      nextP.classList.add(...pClass.split(" "));
     } else {
       // Wrap only <img>
       img.insertAdjacentElement("beforebegin", figure);
@@ -38,11 +38,4 @@
   });
 });
 
-
-    //Change pager button href for category paging
- //   $('a[href^="/blog/simon-bland"]').each(function () {
- //       var oldUrl = $(this).attr("href"); // Get current url
- //       var newUrl = oldUrl.replace("/blog/simon-bland", "/blog/category"); // Create new url
-//        $(this).attr("href", newUrl); // Set href value
-//    });
 

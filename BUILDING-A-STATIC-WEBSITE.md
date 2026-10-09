@@ -89,7 +89,7 @@ tags: post
 
 You can focus on just creating content whenever you need to add new pages; the *post.njk* Nunjucks file which controls the layout of the published page is referenced in the front matter.
 
-This layout file (shown below) contains references to the component files *head.njk*, *header.njk*, *socialicons.njk* and *footer.njk*. There are also fields, for example *{{title}}*, that will call and display the title attribute contained in the front matter.
+This layout file (a part of which is shown below) contains references to the component files *head.njk*, *header.njk*, *socialicons.njk* and *footer.njk*. There are also fields, for example *{{title}}*, that will call and display the title attribute contained in the front matter.
 
 You can see where the HTML content of the webpage is injected into the layout using the content field.
 

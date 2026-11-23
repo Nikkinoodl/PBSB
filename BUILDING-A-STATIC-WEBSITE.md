@@ -45,7 +45,8 @@ There are a few options to choose from in the free software space: I selected El
 
 
 ### Using Eleventy
-Eleventy will read files in a variety of formats (it doesn't seem to care which file extensions are actually used). The main types of files are:
+
+Eleventy will take files in a variety of formats (it doesn't seem to care which file extensions are actually used) and use them to create the folders and HTML pages that will make up your website. The main types of files are:
 
 - *.html* format. Eleventy will read HTML directly which is useful for your first sample page.
 
@@ -132,7 +133,7 @@ The embedded file *head.njk* shown below contains the links to stylesheets. I ha
 The stylesheet *site-specific.css* contains a collection of tweaks to the base Bootstrap CSS that I've adopted over the years. It is easier to keep the website consistent over time if I do this rather than customizing the Bootstrap CSS file.
 
 ```html
-<link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet" type="text/css" />
+<link href="https://fonts.googleapis.com/css?family=Oswald&display=swap" rel="stylesheet" type="text/css" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.8/css/bootstrap.min.css" integrity="sha512-2bBQCjcnw658Lho4nlXJcc6WkV/UxpE/sAokbXPxQNGqmNdQrWqtw26Ns9kFF/yG792pKR1Sx8/Y1Lf1XN4GKA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <link rel="stylesheet" href="/assets/site-specific.css">
 ```
@@ -149,11 +150,12 @@ The file *header.njk* shown below contains the html header element component. Th
 <header>
   <h1 class="instance-name">Art by Simon Bland</h1>
   <div class = "row">
-    <div class = "col-sm-1"></div>
+    <div class = "col-sm-1">
+    </div>
     <div class = "col-sm-10">
-      <ul class="nav">
+      <ul class="nav" aria-label="Website navigation">
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="/">Home</a>
+          <a class="nav-link active" href="/">Home</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="/home/about/">About</a>
@@ -166,7 +168,8 @@ The file *header.njk* shown below contains the html header element component. Th
         </li>
       </ul>
     </div>
-    <div class = "col-sm-1"></div>
+    <div class = "col-sm-1">
+    </div>
   </div>
 </header>
 ```
@@ -250,20 +253,20 @@ The *blogcards.njk* file shown below is a reusable component that just displays 
 The *pagination.njk* file shown below contains the HTML that's used to display the page links.
 
 ```html
-<p>
-        <ul class="pagination">
+<nav aria-label="Page navigation">
+    <ul class="pagination">
         {% if pagination.href.previous %}
             <li class="page-item"><a href="{{ pagination.href.previous }}" class="page-link">Previous</a></li>
         {% else %}
-            <li class="page-item active"><a class="page-link" href="#" aria-current="page">Previous</a></li>
+            <li class="page-item disabled"><span class="page-link">Previous</span></li>
         {% endif %} 
         {% if pagination.href.next %}
             <li class="page-item"><a class="page-link" href="{{ pagination.href.next }}">Next</a></li>
         {% else %}
-            <li class="page-item active"><a class="page-link" href="#" aria-current="page">Next</a></li>
+            <li class="page-item disabled"><span class="page-link">Next</span></li>
         {% endif %}
-        </ul>
-</p>
+    </ul>
+</nav>
 ```
 
 
@@ -273,7 +276,7 @@ The *pagination.njk* file shown below contains the HTML that's used to display t
 ### Contact Page
 The last piece of functionality I added to the site (a year after first launching) was a contact page.
 
-In the past, I've never had many customer contacts via this route and it is far more likely to provide a firehose of spam, scams and other unwanted content. Still, it occasionally proves useful and I am able to filter out most of the unwanted content.
+In the past, I've had few customer contacts via this route and it is far more likely to provide a firehose of spam, scams and other unwanted content. Still, it occasionally proves useful and I am able to filter out most of the unwanted content.
 
 The contact page contains an HTML form, formatted with Bootstrap. When submitted, the form content is posted to an AWS API Gateway, then handed over to an AWS Lambda function (a bit of software that doesn't require a reserved server) which processes the message and sends it on to me using AWS Simple Email Service.
 
@@ -307,11 +310,9 @@ export default function (eleventyConfig) {
     `;
   });
 
-  // Passthrough copies
-  eleventyConfig.addPassthroughCopy("blog");
+  // Passthrough copies of folders
   eleventyConfig.addPassthroughCopy("images");
   eleventyConfig.addPassthroughCopy("assets");
-  eleventyConfig.addPassthroughCopy("archives");
   
   //Explicitly create the archives collection
   eleventyConfig.addCollection("archives", function (collectionApi) {

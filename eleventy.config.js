@@ -9,11 +9,9 @@ export default function (eleventyConfig) {
     `;
   });
 
-  // Passthrough copies
-  eleventyConfig.addPassthroughCopy("blog");
+ // Passthrough copies of folders
   eleventyConfig.addPassthroughCopy("images");
   eleventyConfig.addPassthroughCopy("assets");
-  eleventyConfig.addPassthroughCopy("archives");
   
   //Explicitly create the archives collection
   eleventyConfig.addCollection("archives", function (collectionApi) {

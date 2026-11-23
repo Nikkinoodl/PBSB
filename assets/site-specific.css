@@ -115,22 +115,22 @@ h1,
 .h1,
 h2,
 .h2 {
-    font-size: var(--pbsb-std-font-size) * 2;
+    font-size: calc(var(--pbsb-std-font-size) * 2);
 }
 
 h3,
 .h3 {
-    font-size: var(--pbsb-std-font-size) * 1.6;
+    font-size: calc(var(--pbsb-std-font-size) * 1.6);
 }
 
 h4,
 .h4 {
-    font-size: var(--pbsb-std-font-size) * 1.4;
+    font-size: calc(var(--pbsb-std-font-size) * 1.4);
 }
 
 h5,
 .h5 {
-    font-size: var(--pbsb-std-font-size) * 1.2;
+    font-size: calc(var(--pbsb-std-font-size) * 1.2);
 }
 
 h6,
@@ -143,7 +143,7 @@ h6,
 }
 
 .postdate {
-    font-size: var(--pbsb-std-font-size) * 0.8;
+    font-size: calc(var(--pbsb-std-font-size) * 0.8);
 }
 
 .signoff {
@@ -162,11 +162,11 @@ h6,
     text-align: center;
     color: var(--pbsb-grey);
     line-height: 1.4;
-    letter-spacing: var(--pbsb-std-font-size) * 0.4;
+    letter-spacing: calc(var(--pbsb-std-font-size) * 0.4);
 }
 
 .instance-name {
-    font-size: var(--pbsb-std-font-size) * 2.5;
+    font-size: calc(var(--pbsb-std-font-size) * 2.5);
 }
 
 .instance-description {
